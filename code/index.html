@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>扇形图和折线图</title>
+<!-- 引入Chart.js库 -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4"></script>
+<style>
+    .container {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 50px;
+        position: relative;
+      
+    }
+    .chart-container1 {
+        width: 55%;
+        border: 1px solid #ccc;
+        padding: 20px;
+        padding-top: 5px;
+        height: 590px;
+        border-radius: 5px;
+        background-color: white;
+    }
+    .chart-container2 {
+        margin-left: 20px;
+        padding-top: 5px;
+        width: 33%;
+        height: 600px;
+        border: 1px solid #ccc;
+        padding: 10px;
+        padding-top: 5px;
+        border-radius: 5px;
+        background-color: white;
+    }
+
+
+  .box-container{
+    display: flex;
+    justify-content: center;
+
+  }
+  .box {
+    position: relative;
+    margin: 20px;
+    width: 400px;
+    height: 150px;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  .top {
+    height: 80%;
+    display: flex;
+  }
+
+
+  .left {
+    width: 35%;
+    height: 70%;
+    position: relative;
+}
+
+.left img {
+    width: 50%;
+    height: 65%;
+    position:absolute;
+    right: 0;
+    bottom: 0;
+}
+
+  .right {
+    width: 50%;
+    position: absolute;
+    right: 10px;
+    display: flex;
+    text-align: right; /* 将内容右对齐 */
+    flex-direction: column; /* 将子元素垂直排列 */
+  }
+  .right p {
+    font-size: 18px;
+    font-weight: bold; /* 设置字体加粗 */
+    padding-bottom: 0;
+    color: #707070;
+    
+}
+
+.right h2{
+    margin-top: -15px;
+}
+  .bottom {
+    height: 20%;
+    display: flex;
+    position: relative;
+    left: -25%;
+    align-items: center;
+    justify-content: center;
+    bottom: 10px;
+  }
+
+</style>
+</head>
+<body style="background-color: #f4f1f1;">
+    
+<div class="box-container">
+    <div class="box" id="box1">
+        <div class="top">
+          <div class="left">
+            <img src="11.png" alt="图片">
+          </div>
+          <div class="right">
+            <p >任务总量</p>
+          
+            <h2 >28,608</h2>
+           
+          </div>
+        </div>
+        <div class="bottom">
+          <p>&#128472 27分钟前更新</p>
+        </div>
+      </div>
+    <div class="box" id="box2">
+        <div class="top">
+            <div class="left">
+              <img src="22.png" alt="图片">
+            </div>
+            <div class="right">
+              <p>卸载至云端总量</p>
+            
+              <h2 >14,505</h2>
+             
+            </div>
+          </div>
+          <div class="bottom">
+            <p>&#128472 27分钟前更新</p>
+          </div>
+    </div>
+    <div class="box" id="box3">
+        <div class="top">
+            <div class="left">
+              <img src="33.png" alt="图片">
+            </div>
+            <div class="right">
+              <p >卸载至边缘端总量</p>
+            
+              <h2 >10,121</h2>
+             
+            </div>
+          </div>
+          <div class="bottom">
+            <p>&#128472 27分钟前更新</p>
+          </div>
+    </div>
+    <div class="box" id="box4">
+        <div class="top">
+            <div class="left">
+              <img src="44.png" alt="图片">
+            </div>
+            <div class="right">
+              <p >卸载至本地总量</p>
+            
+              <h2 >3,982</h2>
+             
+            </div>
+          </div>
+          <div class="bottom">
+            <p>&#128472 27分钟前更新</p>
+          </div>
+    </div>
+  </div>
+<div class="container">
+        <!-- 折线图表单 -->
+        <div class="chart-container1">
+            <h1>24h卸载任务量统计</h1>
+            <p style="color: #707070;">24h statistics</p>
+            <canvas id="lineChart"></canvas>
+            <hr style="border-top: 1px solid black; width: 100%;">
+            <p>&#128472 27分钟前更新</p>
+
+        </div>
+    <!-- 扇形图表单 -->
+    <div class="chart-container2">
+        <h1>今日任务卸载统计</h1>
+        <p style="color: #707070;">Task offloaded statistics of the current day</p>
+        <div id="pieChartContainer" style="width: 100%; position: relative; top:50px; margin: auto;">
+            <canvas id="pieChart"></canvas>
+        </div>
+        <!-- <canvas id="pieChart"></canvas> -->
+        <div style="position: relative; top: 170px;">
+            <hr style="border-top: 1px solid black; width: 100%;">
+            <p >&#128472 27分钟前更新</p>
+        </div>
+
+    </div>
+
+</div>
+<script>
+    // 扇形图数据
+    var pieData = {
+        labels: ['完全本地计算', '边缘端计算', '云端计算'],
+        datasets: [{
+            data: [13.9, 35.4, 50.7],
+            backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56']
+        }]
+    };
+    
+    // 折线图数据
+    var lineData = {
+        labels: ['0:00', '2:00', '4:00', '6:00', '8:00', '10:00','12:00','14:00','16:00','18:00','20:00','22:00'],
+        datasets: [{
+            label: '完全本地计算',
+            data: [0,0,0,0,800,1000,500,100,1000,1000,0,0],
+         
+            borderColor: '#36A2EB',
+            fill: false
+        },
+        {
+            label: '边缘端计算',
+            data: [0, 0, 0, 0, 2000, 3000,1000,200,1800,2400,0,0],
+            borderColor: '#FF6384',
+            fill: false
+        },
+        {
+            label: '云端计算',
+              data: [0, 0, 0, 0, 2500, 4000,1500,410,2500,4000,0,0],
+            borderColor: '#FFCE56',
+            fill: false
+        }]
+    };
+    
+    
+    // 创建扇形图
+    var pieChartCanvas = document.getElementById('pieChart').getContext('2d');
+    var pieChart = new Chart(pieChartCanvas, {
+        type: 'pie',
+        data: pieData,
+        options: {
+            elements: {
+            arc: {
+                borderWidth: -1 // 调整扇形的边框宽度以放大半径
+            }
+        },
+            legend: {
+                display: true,
+                position: 'bottom', // 设置图例位置
+                labels: {
+                    fontColor: 'black', // 设置图例标签字体颜色为黑色
+                    fontSize: 14 // 设置图例标签字体大小
+                }
+            },
+            tooltips: {
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        var dataset = data.datasets[tooltipItem.datasetIndex];
+                        var total = dataset.data.reduce(function(previousValue, currentValue, currentIndex, array) {
+                            return previousValue + currentValue;
+                        });
+                        var currentValue = dataset.data[tooltipItem.index];
+                        var percentage = Math.round((currentValue / total) * 100);
+                        return data.labels[tooltipItem.index] + ': ' + currentValue + ' (' + percentage + '%)';
+                    }
+                }
+            }
+        }
+    });
+    
+    // 创建折线图
+    var lineChartCanvas = document.getElementById('lineChart').getContext('2d');
+    var lineChart = new Chart(lineChartCanvas, {
+        type: 'line',
+        data: lineData,
+        options: {
+            legend: {
+                display: true,
+                position: 'bottom', // 设置图例位置为右上角
+                labels: {
+                    fontColor: 'black', // 设置图例标签字体颜色为黑色
+                    fontSize: 14 // 设置图例标签字体大小
+                }
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        max: 8000,
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+    </script>
+    
+</body>
+</html>
+
